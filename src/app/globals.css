@@ -24,3 +24,62 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 印刷用スタイル */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    background: #ffffff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* 画面用 UI をすべて非表示 */
+  .no-print,
+  main:not(#print-target),
+  header,
+  footer,
+  nav,
+  button,
+  .fixed,
+  .absolute {
+    display: none !important;
+  }
+
+  /* 印刷ターゲットを表示 */
+  #print-target {
+    display: block !important;
+    position: static !important;
+    z-index: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .print-page {
+    width: 210mm;
+    min-height: 297mm;
+    page-break-after: always;
+    break-after: page;
+    background: #ffffff !important;
+    box-sizing: border-box;
+    overflow: visible !important;
+    padding: 8mm !important;
+  }
+
+  .print-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* 印刷時にページ内コンテンツの overflow を解除 */
+  .print-page-content {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+}

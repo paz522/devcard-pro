@@ -1,0 +1,30 @@
+import { Article } from "../articles";
+
+export const leadership1: Article = {
+  id: "leadership-1",
+  title: "Managerial Management of 'Technical Debt' Required of Senior Engineers: Strategic Trade-offs That Accelerate Business",
+  category: "Leadership",
+  author: "DevCard Editorial",
+  date: "2026.03.11",
+  readTime: "45 min",
+  excerpt: "Not all debt is evil. From the perspective of optimizing management resources, we explain in detail how to intentionally take on debt and create repayment plans to maximize business velocity.",
+  blocks: [
+    { type: "h2", content: "1. Redefinition of Technical Debt: 'Ignorance'-Based Debt and 'Strategic' Debt" },
+    { type: "text", content: "The term 'technical debt' is often used as a synonym for 'dirty code' or 'design mistakes.' However, for engineers who demonstrate true leadership, debt is 'a financial option to buy current delivery speed at the cost of future flexibility.' Returning to the original concept proposed by Ward Cunningham, debt is something to be managed, not merely an enemy to be eliminated." },
+    { type: "text", content: "What is important here is understanding the 'Technical Debt Quadrant' presented by Martin Fowler. What we should tolerate is 'prudent and intentional debt' chosen with recognized risk to avoid missing business opportunities. On the other hand, 'reckless debt' due to skill deficiency or carelessness becomes cancer cells that destroy organizational health from within. The leader's role is to distinguish between these two and constantly question whether the debt the team carries is 'an investment worth paying interest on.'" },
+    { type: "h3", content: "Three Checklists to Determine Debt Quality" },
+    { type: "list", content: ["**Time-to-Market Advantage**: By taking on this debt, can we gain market share ahead of competitors or avoid fatal opportunity loss?", "**Predictability of Repayment Cost**: Can we roughly estimate the effort required for refactoring to repay the debt at this time? (Are we not embracing unknown complexity?)", "**Context Sharing**: Have we documented why that design was chosen and what side effects are expected in the future in ADRs (Architecture Decision Records), etc., so that successors will not be confused?"] },
+    { type: "h2", content: "2. Technology of Speaking Debt Repayment Roadmap in 'Business Common Language'" },
+    { type: "text", content: "The biggest wall that engineering managers and tech leads face is making non-engineer business-side stakeholders (CEO, PM, sales) understand the importance of refactoring and infrastructure improvement and secure budget. Explanations like 'the code will become clean' do not move business-side hearts. This is because code beauty is a secondary concern for them." },
+    { type: "text", content: "To succeed in negotiation, technical problems must be translated into 'business risks' or 'economic losses.' For example, instead of saying 'We're anxious because there's no test code,' you should speak numerically: 'The current low coverage increases the probability of deployment failure when adding new features in the future by 30%, and risks doubling the Mean Time to Restore (MTTR) when incidents occur. This corresponds to an estimated XX hours of opportunity loss annually.'" },
+    { type: "quote", content: "'Correctness' in engineering does not necessarily match 'correctness' in business. A professional is one who fulfills the 'accountability' to bridge that discrepancy." },
+    { type: "h3", content: "Three Concrete Proposal Methods to Secure Refactoring Time" },
+    { type: "list", content: ["**Codification of the 20% Rule**: Agree as an organizational standard convention to allocate 20% of sprint effort fixedly to maintenance and infrastructure improvement. Define this as 'paying technical interest' and agree with the PM that development velocity will certainly decline in the future if this is delinquent.", "**Utilization of Value Stream Mapping**: Visualize lead time trends and show with graphs the fact that development that once took one week now takes one month due to accumulated debt. Data eliminates subjective emotions.", "**Integration with Incident Post-Mortems**: Immediately after a major incident occurs is the best opportunity for the entire organization to understand the terror of debt. Slide fundamental design improvements into recurrence prevention measures as the 'highest priority item.'"] },
+    { type: "h2", content: "3. Managing Debt as 'Culture': Pursuit of Engineering Excellence" },
+    { type: "text", content: "Ultimately, whether technical debt can be controlled depends on organizational culture. Leaders must foster a culture where both 'no one is blamed for reporting debt (psychological safety)' and 'not leaving debt unresolved (professional integrity)' coexist. Concealing debt not only accelerates system corruption but also erodes trust relationships within the team." },
+    { type: "text", content: "Excellent leaders make code review function not merely as a bug check venue but as a venue for 'confirmation of joint responsibility' regarding technical debt. Organizations where conversations like 'This implementation may become debt in the future, but considering the current business situation, let's tolerate it. However, let's create an issue and repay it next quarter' are exchanged daily are truly agile organizations in the real sense." },
+    { type: "tip", content: "Do not think of debt repayment as mere 'cleaning.' It is 'an investment in future development velocity.' To boost team morale, create mechanisms for the entire organization to celebrate achievements such as improved performance or reduced development effort through refactoring." },
+    { type: "warning", content: "'Perfectionism' trying to make debt completely zero sometimes kills business more than incompetent laziness. Leaders must never forget that the ultimate purpose of engineering is not writing code but delivering business value." },
+    { type: "link", content: "DORA Metrics Utilization to Make Organizational Culture Dense", targetId: "culture-1" }
+  ]
+};
