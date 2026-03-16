@@ -541,8 +541,8 @@ export default function Home() {
              <span className="text-lg font-black tracking-tighter uppercase">DevCard.Pro</span>
           </div>
           <div className="flex items-center justify-center gap-6 text-[10px] font-medium text-neutral-600">
-            <button onClick={() => router.push("/legal")} className="hover:text-white transition-colors uppercase tracking-widest">
-              Legal
+            <button onClick={() => router.push("/tokushoho")} className="hover:text-white transition-colors uppercase tracking-widest">
+              特定商取引法に基づく表記
             </button>
           </div>
           <p className="text-[10px] text-neutral-600 font-medium uppercase tracking-widest">
