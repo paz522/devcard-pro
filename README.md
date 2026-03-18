@@ -79,3 +79,9 @@ npm run deploy
 npx @cloudflare/next-on-pages
 npx wrangler pages deploy
 ```
+=======
+## 3/16 Add a Tokushoho page.
+
+## Production Setup
+- Switched to production Stripe keys
+>>>>>>> b443e48dd67ddd542f300d188cfa4a209e40ba87
