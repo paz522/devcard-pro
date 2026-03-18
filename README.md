@@ -38,3 +38,44 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Production Setup
 
 - Switched to production Stripe keys
+
+## Deploy on Cloudflare Pages
+
+This project is configured for Cloudflare Pages deployment using `@cloudflare/next-on-pages`.
+
+### Prerequisites
+
+1. Install Wrangler CLI:
+```bash
+npm install -g wrangler
+```
+
+2. Authenticate with Cloudflare:
+```bash
+wrangler login
+```
+
+3. Set environment variables in Cloudflare Pages dashboard:
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `NEXT_PUBLIC_GITHUB_TOKEN`
+
+### Build and Deploy
+
+```bash
+# Build for Cloudflare Pages
+npm run pages:build
+
+# Preview locally
+npm run preview
+
+# Deploy to Cloudflare Pages
+npm run deploy
+```
+
+### Manual Deploy
+
+```bash
+npx @cloudflare/next-on-pages
+npx wrangler pages deploy
+```
