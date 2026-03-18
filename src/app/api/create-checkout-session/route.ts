@@ -3,20 +3,31 @@ import Stripe from 'stripe';
 
 export const runtime = 'edge';
 
-const stripeKey = process.env.STRIPE_SECRET_KEY;
-console.log('[Stripe] Key exists:', !!stripeKey);
-console.log('[Stripe] Key length:', stripeKey?.length);
+// Stripe インスタンスはリクエスト時に遅延初期化（ビルド時エラー防止）
+let stripeInstance: Stripe | null = null;
 
-const stripe = new Stripe(stripeKey!, {
-  apiVersion: '2026-02-25.clover' as any,
-});
+function getStripe(): Stripe {
+  if (!stripeInstance) {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    
+    if (!stripeKey) {
+      throw new Error('STRIPE_SECRET_KEY is not configured');
+    }
+    
+    stripeInstance = new Stripe(stripeKey, {
+      apiVersion: '2026-02-25.clover' as any,
+    });
+    
+    console.log('[Stripe] Instance initialized');
+  }
+  
+  return stripeInstance;
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { username } = body;
-
-    console.log('[Stripe] Creating session for:', username);
 
     if (!username) {
       return NextResponse.json(
@@ -24,6 +35,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Stripe インスタンスを遅延取得
+    const stripe = getStripe();
+    
+    console.log('[Stripe] Creating session for:', username);
 
     // Create Stripe session
     const session = await stripe.checkout.sessions.create({
@@ -55,6 +71,15 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[Stripe Error]:', err);
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    
+    // 環境変数エラーの場合は分かりやすいメッセージを返す
+    if (errorMessage.includes('STRIPE_SECRET_KEY')) {
+      return NextResponse.json(
+        { error: 'Stripe configuration error. Please check environment variables.' },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
       { error: `Stripe error: ${errorMessage}` },
       { status: 500 }
