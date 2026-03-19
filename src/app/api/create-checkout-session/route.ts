@@ -8,11 +8,11 @@ console.log('[ENV CHECK]', !!process.env.STRIPE_SECRET_KEY);
 // Stripe API キーは環境変数から取得
 function getStripeKey(): string {
   const stripeKey = process.env.STRIPE_SECRET_KEY;
-  
+
   if (!stripeKey) {
     throw new Error('STRIPE_SECRET_KEY is not configured');
   }
-  
+
   return stripeKey;
 }
 
@@ -56,14 +56,14 @@ async function createCheckoutSession(params: {
     // エラーレスポンスをそのままログ出力
     const errorText = await response.text();
     console.error('[Stripe API Error Response]:', errorText);
-    
+
     let error;
     try {
       error = JSON.parse(errorText);
     } catch {
       error = { error: { message: errorText } };
     }
-    
+
     throw new Error(error.error?.message || 'Failed to create checkout session');
   }
 
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     const origin = request.headers.get('origin') || '';
-    
+
     console.log('[Stripe] Creating session for:', username);
 
     // Stripe API を直接呼び出し
@@ -92,20 +92,27 @@ export async function POST(request: NextRequest) {
     console.log('[Stripe] Session created:', session.id);
     return NextResponse.json({ sessionId: session.id, url: session.url });
   } catch (err) {
+    // 詳細なエラーログを出力
     console.error('[Stripe Error]:', err);
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-    
-    // 環境変数エラーの場合は分かりやすいメッセージを返す
-    if (errorMessage.includes('STRIPE_SECRET_KEY')) {
-      return NextResponse.json(
-        { error: 'Stripe configuration error. Please check environment variables.' },
-        { status: 500 }
-      );
+    console.error('[Stack]:', err instanceof Error ? err.stack : 'No stack trace');
+    console.log('[ENV CHECK] STRIPE_SECRET_KEY exists:', !!process.env.STRIPE_SECRET_KEY);
+
+    // エラー情報を構築
+    const errorInfo = {
+      error: err instanceof Error ? err.message : 'Unknown error',
+      stack: err instanceof Error ? err.stack : undefined,
+      env: {
+        STRIPE_SECRET_KEY_exists: !!process.env.STRIPE_SECRET_KEY,
+      },
+      timestamp: new Date().toISOString(),
+    };
+
+    // 環境変数エラーの場合は分かりやすいメッセージを追加
+    if (errorInfo.error.includes('STRIPE_SECRET_KEY')) {
+      errorInfo.error = 'Stripe configuration error. Please check environment variables.';
     }
-    
-    return NextResponse.json(
-      { error: `Stripe error: ${errorMessage}` },
-      { status: 500 }
-    );
+
+    // 詳細な JSON レスポンスを返す
+    return NextResponse.json(errorInfo, { status: 500 });
   }
 }
