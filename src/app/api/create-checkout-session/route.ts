@@ -80,6 +80,15 @@ async function createCheckoutSession(params: {
 }
 
 export async function POST(request: NextRequest) {
+  // テストレスポンス（一時的）
+  return new Response(
+    JSON.stringify({ test: true }),
+    {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+
   try {
     const body = await request.json();
     const { username } = body;
