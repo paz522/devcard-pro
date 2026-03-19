@@ -65,6 +65,11 @@ export default {
       }
 
       // Stripe Checkout Session を作成
+      // origin から URL を構築（スキームを含む）
+      const origin = request.headers.get('origin') || 'https://devcard-pro.vercel.app';
+      const successUrl = `${origin}/success?session_id={CHECKOUT_SESSION_ID}&username=${username}`;
+      const cancelUrl = `${origin}/`;
+
       const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
         method: 'POST',
         headers: {
@@ -79,8 +84,8 @@ export default {
           'line_items[0][price_data][unit_amount]': '500',
           'line_items[0][quantity]': '1',
           mode: 'payment',
-          success_url: `${request.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}&username=${username}`,
-          cancel_url: `${request.headers.get('origin')}/`,
+          success_url: successUrl,
+          cancel_url: cancelUrl,
           'metadata[username]': username,
           'metadata[product]': 'premium_report',
         }),
