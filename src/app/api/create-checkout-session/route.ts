@@ -29,24 +29,16 @@ async function createCheckoutSession(params: {
     },
     body: new URLSearchParams({
       payment_method_types: 'card',
-      line_items: JSON.stringify([{
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'DevCard.Pro Premium Report',
-            description: `5-page technical analysis report for ${params.username}`,
-          },
-          unit_amount: '500', // $5.00
-        },
-        quantity: '1',
-      }]),
+      'line_items[0][price_data][currency]': 'usd',
+      'line_items[0][price_data][product_data][name]': 'DevCard.Pro Premium Report',
+      'line_items[0][price_data][product_data][description]': `5-page technical analysis report for ${params.username}`,
+      'line_items[0][price_data][unit_amount]': '500',
+      'line_items[0][quantity]': '1',
       mode: 'payment',
       success_url: `${params.origin}/success?session_id={CHECKOUT_SESSION_ID}&username=${params.username}`,
       cancel_url: `${params.origin}/`,
-      metadata: JSON.stringify({
-        username: params.username,
-        product: 'premium_report',
-      }),
+      'metadata[username]': params.username,
+      'metadata[product]': 'premium_report',
     }),
   });
 
