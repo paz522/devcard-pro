@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
 
-export const runtime = 'edge';
-
 // 環境変数のチェック（デバッグ用）
 console.log('[ENV CHECK]', !!process.env.STRIPE_SECRET_KEY);
 
