@@ -19,7 +19,7 @@ async function createCheckoutSession(params: {
   origin: string;
 }): Promise<{ url: string; id: string }> {
   const stripeKey = getStripeKey();
-  
+
   const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',
     headers: {
@@ -50,7 +50,17 @@ async function createCheckoutSession(params: {
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    // エラーレスポンスをそのままログ出力
+    const errorText = await response.text();
+    console.error('[Stripe API Error Response]:', errorText);
+    
+    let error;
+    try {
+      error = JSON.parse(errorText);
+    } catch {
+      error = { error: { message: errorText } };
+    }
+    
     throw new Error(error.error?.message || 'Failed to create checkout session');
   }
 
