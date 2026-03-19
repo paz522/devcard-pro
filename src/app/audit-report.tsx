@@ -23,7 +23,7 @@ export function AuditReport({ user, marketValue, metrics, onClose }: { user: Git
 
     try {
       // Create Stripe Checkout session
-      const response = await fetch('/api/create-checkout-session', {
+      const response = await fetch('https://devcard-pro-api.kobap2501.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
