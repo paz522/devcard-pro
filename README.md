@@ -43,45 +43,53 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 This project is configured for Cloudflare Pages deployment using `@cloudflare/next-on-pages`.
 
-### Prerequisites
+### Option 1: GitHub Actions (Recommended)
 
-1. Install Wrangler CLI:
+This project includes a GitHub Actions workflow for automatic deployment.
+
+1. **Set up Cloudflare secrets in GitHub:**
+   - Go to your repository → Settings → Secrets and variables → Actions
+   - Add the following secrets:
+     - `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token
+     - `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
+
+2. **Set up environment variables in Cloudflare Pages:**
+   - Go to Cloudflare Dashboard → Pages → devcard-pro → Settings → Environment variables
+   - Add the following variables:
+     - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+     - `STRIPE_SECRET_KEY`
+     - `NEXT_PUBLIC_GITHUB_TOKEN`
+
+3. **Push to master branch:**
+   - Every push to `master` will automatically deploy to Cloudflare Pages
+
+### Option 2: Manual Deploy (Requires Linux/WSL)
+
 ```bash
+# Install Wrangler CLI
 npm install -g wrangler
-```
 
-2. Authenticate with Cloudflare:
-```bash
+# Authenticate with Cloudflare
 wrangler login
-```
 
-3. Set environment variables in Cloudflare Pages dashboard:
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-- `STRIPE_SECRET_KEY`
-- `NEXT_PUBLIC_GITHUB_TOKEN`
+# Set environment variables
+export CLOUDFLARE_ACCOUNT_ID="your-account-id"
+export CLOUDFLARE_API_TOKEN="your-api-token"
 
-### Build and Deploy
-
-```bash
-# Build for Cloudflare Pages
-npm run pages:build
-
-# Preview locally
-npm run preview
-
-# Deploy to Cloudflare Pages
+# Build and deploy
 npm run deploy
 ```
 
-### Manual Deploy
+### Option 3: Vercel (Alternative)
 
-```bash
-npx @cloudflare/next-on-pages
-npx wrangler pages deploy
-```
-=======
-## 3/16 Add a Tokushoho page.
+For simpler deployment, you can use Vercel:
+
+1. Install Vercel CLI: `npm install -g vercel`
+2. Run: `vercel deploy`
+3. Set environment variables in Vercel dashboard
 
 ## Production Setup
+
 - Switched to production Stripe keys
->>>>>>> b443e48dd67ddd542f300d188cfa4a209e40ba87
+- 3/16 Add a Tokushoho page.
+- GitHub Actions configured for Cloudflare Pages auto-deploy
