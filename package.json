@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "cloudflare:build": "opennextjs-cloudflare",
+    "cloudflare:build": "npx @opennextjs/cloudflare build",
     "cloudflare:preview": "npm run cloudflare:build && wrangler pages dev",
     "cloudflare:deploy": "npm run cloudflare:build && wrangler pages deploy",
     "cf-typegen": "wrangler types"
