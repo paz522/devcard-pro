@@ -90,6 +90,8 @@ For simpler deployment, you can use Vercel:
 
 ## Production Setup
 
+## Migrated from Vercel to Cloudflare Pages (3/19)
+
 - Switched to production Stripe keys
 - 3/16 Add a Tokushoho page.
 - GitHub Actions configured for Cloudflare Pages auto-deploy
