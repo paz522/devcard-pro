@@ -1,27 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 
 export const runtime = 'edge';
 
-// Stripe インスタンスはリクエスト時に遅延初期化（ビルド時エラー防止）
-let stripeInstance: Stripe | null = null;
-
-function getStripe(): Stripe {
-  if (!stripeInstance) {
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
-    
-    if (!stripeKey) {
-      throw new Error('STRIPE_SECRET_KEY is not configured');
-    }
-    
-    stripeInstance = new Stripe(stripeKey, {
-      apiVersion: '2026-02-25.clover' as any,
-    });
-    
-    console.log('[Stripe] Instance initialized');
+// Stripe API キーは環境変数から取得
+function getStripeKey(): string {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  
+  if (!stripeKey) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
   }
   
-  return stripeInstance;
+  return stripeKey;
+}
+
+// Stripe API を直接呼び出す（Edge Runtime 対応）
+async function createCheckoutSession(params: {
+  username: string;
+  origin: string;
+}): Promise<{ url: string; id: string }> {
+  const stripeKey = getStripeKey();
+  
+  const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${stripeKey}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      payment_method_types: 'card',
+      line_items: JSON.stringify([{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'DevCard.Pro Premium Report',
+            description: `5-page technical analysis report for ${params.username}`,
+          },
+          unit_amount: '500', // $5.00
+        },
+        quantity: '1',
+      }]),
+      mode: 'payment',
+      success_url: `${params.origin}/success?session_id={CHECKOUT_SESSION_ID}&username=${params.username}`,
+      cancel_url: `${params.origin}/`,
+      metadata: JSON.stringify({
+        username: params.username,
+        product: 'premium_report',
+      }),
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || 'Failed to create checkout session');
+  }
+
+  return response.json();
 }
 
 export async function POST(request: NextRequest) {
@@ -36,35 +69,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Stripe インスタンスを遅延取得
-    const stripe = getStripe();
+    const origin = request.headers.get('origin') || '';
     
     console.log('[Stripe] Creating session for:', username);
 
-    // Create Stripe session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'DevCard.Pro Premium Report',
-              description: '5-page technical analysis report for ' + username,
-            },
-            unit_amount: 500, // $5.00
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${request.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}&username=${username}`,
-      cancel_url: `${request.headers.get('origin')}/`,
-      metadata: {
-        username: username,
-        product: 'premium_report',
-      },
-    });
+    // Stripe API を直接呼び出し
+    const session = await createCheckoutSession({ username, origin });
 
     console.log('[Stripe] Session created:', session.id);
     return NextResponse.json({ sessionId: session.id, url: session.url });
