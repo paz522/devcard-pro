@@ -65,7 +65,26 @@ async function createCheckoutSession(params: {
     throw new Error(error.error?.message || 'Failed to create checkout session');
   }
 
-  return response.json();
+  // 成功レスポンスの処理
+  const responseText = await response.text();
+  
+  // レスポンスが空の場合
+  if (!responseText || responseText.trim() === '') {
+    console.error('[Stripe API Error]: Empty response received');
+    throw new Error('Stripe API returned empty response');
+  }
+
+  // JSON パースの試行
+  let data;
+  try {
+    data = JSON.parse(responseText);
+  } catch (parseError) {
+    console.error('[Stripe API Error]: Invalid JSON response');
+    console.error('[Stripe API Raw Response]:', responseText);
+    throw new Error(`Invalid JSON from Stripe API: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
+  }
+
+  return data;
 }
 
 export async function POST(request: NextRequest) {
