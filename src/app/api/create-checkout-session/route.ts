@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
@@ -76,9 +76,12 @@ export async function POST(request: NextRequest) {
     const { username } = body;
 
     if (!username) {
-      return NextResponse.json(
-        { error: 'Username is required' },
-        { status: 400 }
+      return new Response(
+        JSON.stringify({ error: 'Username is required' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
       );
     }
 
@@ -90,7 +93,13 @@ export async function POST(request: NextRequest) {
     const session = await createCheckoutSession({ username, origin });
 
     console.log('[Stripe] Session created:', session.id);
-    return NextResponse.json({ sessionId: session.id, url: session.url });
+    return new Response(
+      JSON.stringify({ sessionId: session.id, url: session.url }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   } catch (err) {
     // 詳細なエラーログを出力
     console.error('[Stripe Error]:', err);
@@ -113,6 +122,12 @@ export async function POST(request: NextRequest) {
     }
 
     // 詳細な JSON レスポンスを返す
-    return NextResponse.json(errorInfo, { status: 500 });
+    return new Response(
+      JSON.stringify(errorInfo),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 }
