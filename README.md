@@ -41,7 +41,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Deploy on Cloudflare Pages
 
-This project is configured for Cloudflare Pages deployment using `@cloudflare/next-on-pages`.
+This project uses **OpenNext for Cloudflare** (`@opennextjs/cloudflare`) for deployment.
 
 ### Option 1: GitHub Actions (Recommended)
 
@@ -77,7 +77,7 @@ export CLOUDFLARE_ACCOUNT_ID="your-account-id"
 export CLOUDFLARE_API_TOKEN="your-api-token"
 
 # Build and deploy
-npm run deploy
+npm run cloudflare:deploy
 ```
 
 ### Option 3: Vercel (Alternative)
